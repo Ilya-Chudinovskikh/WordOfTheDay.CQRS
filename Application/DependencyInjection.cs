@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Reflection;
 
 namespace Application
@@ -10,6 +10,18 @@ namespace Application
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+        }
+        public static void AddConfiguredMassTransit(this IServiceCollection services, string host)
+        {
+            services.AddMassTransit(Configuration =>
+            {
+                Configuration.UsingRabbitMq((context, config) =>
+                {
+                    config.Host(host);
+                });
+            });
+
+            services.AddMassTransitHostedService();
         }
     }
 }

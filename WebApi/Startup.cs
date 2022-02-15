@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Repository;
 using Application;
+using MediatR;
+using System.Reflection;
 
 namespace WebApi
 {
@@ -27,10 +29,14 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             services.AddApplication();
             services.AddRepository(Configuration.GetConnectionString("WordsDbContext"));
+            services.AddConfiguredMassTransit(Configuration.GetConnectionString("RabbitMQHost"));
 
-            services.AddControllers();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
