@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Application.Features.WordFeatures.Queries.QueryExtensions;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models;
+using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -15,16 +16,10 @@ namespace Application.Features.WordFeatures.Queries
         public GetWordOfTheDayQuery()
         {
         }
-        public class GetWordOfTheDayQueryHandler : IRequestHandler<GetWordOfTheDayQuery, WordCount>
+        public class GetWordOfTheDayQueryHandler : QueriesHandlerBaseClass, IRequestHandler<GetWordOfTheDayQuery, WordCount>
         {
-            private readonly IWordsDbContext _context;
-            public GetWordOfTheDayQueryHandler(IWordsDbContext context)
+            public GetWordOfTheDayQueryHandler(IWordsDbContext context) : base(context)
             {
-                _context = context;
-            }
-            private static DateTime DateToday
-            {
-                get { return DateTime.Today.ToUniversalTime(); }
             }
             public async Task<WordCount> Handle(GetWordOfTheDayQuery query, CancellationToken cancellationToken)
             {

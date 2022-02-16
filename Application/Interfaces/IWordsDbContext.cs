@@ -7,6 +7,6 @@ namespace Application.Interfaces
     public interface IWordsDbContext
     {
         DbSet<Word> Words { get; set; }
-        Task<int> SaveChanges();
+        Task SaveChanges();
     }
 }

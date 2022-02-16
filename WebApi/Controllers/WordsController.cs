@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Application.Features.WordFeatures.Queries;
 using Application.Features.WordFeatures.Commands;
@@ -36,6 +34,13 @@ namespace WebApi.Controllers
             var closestWords = await _mediator.Send(new GetClosestWordsQuery(email));
 
             return Ok(closestWords);
+        }
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetUserWord(string email)
+        {
+            var userWord = await _mediator.Send(new GetUserWordQuery(email));
+
+            return Ok(userWord);
         }
         [HttpPost]
         public async Task<IActionResult> PostWord(Word word)

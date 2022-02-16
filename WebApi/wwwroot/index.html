@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>One word for one world!</title>
+</head>
+<body>
+    <center><h1>One word for one world!</h1></center>
+    <div id="errors" class="alert alert-danger" style="display:none;"></div>
+    <center>
+        <form action="javascript:void(0);" method="POST" onsubmit="addWord()">
+            <div class="form-group">
+                <h3>Your EMAIL</h3>
+                <input type="email" id="add-email" placeholder="Your email">
+            </div>
+            <div class="form-group">
+                <h3>Just one word</h3>
+                <input type="text" id="add-word" placeholder="Your word">
+            </div>
+            <br />
+            <div class="form-group group">
+                <button type="submit" id="submit" class="btn btn-primary">
+                    Tell the whole world!
+                </button>
+            </div>
+        </form>
+    </center>
+    <table>
+        <tr>
+            <th>email</th>
+            <th>text</th>
+            <th>add time</th>
+            <th></th>
+        </tr>
+        <tbody id="words"></tbody>
+    </table>
+    <script src="js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        getWords();
+    </script>
+</body>
+</html>

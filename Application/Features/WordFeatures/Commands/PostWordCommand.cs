@@ -46,7 +46,7 @@ namespace Application.Features.WordFeatures.Commands
 
                 return word;
             }
-            public static (double longtitude, double latitude) MockLocation()
+            private static (double longtitude, double latitude) MockLocation()
             {
                 var longtitude = RandomCoordinate(180);
                 var latitude = RandomCoordinate(90);
@@ -55,7 +55,7 @@ namespace Application.Features.WordFeatures.Commands
 
                 return location;
             }
-            public static double RandomCoordinate(int degree)
+            private static double RandomCoordinate(int degree)
             {
                 var random = new Random();
                 var intCoordinate = random.Next(-degree, degree);
@@ -65,13 +65,13 @@ namespace Application.Features.WordFeatures.Commands
 
                 return coordinate;
             }
-            public async Task PostAndPublishWord(Word word)
+            private async Task PostAndPublishWord(Word word)
             {
                 await PostWord(word);
 
                 await _publishEndpoint.Publish(new WordInfo(word.Id, word.Email, word.Text, word.AddTime, word.LocationLongitude, word.LocationLatitude));
             }
-            public async Task PostWord(Word word)
+            private async Task PostWord(Word word)
             {
                 _context.Words.Add(word);
                 await _context.SaveChanges();

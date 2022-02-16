@@ -9,6 +9,7 @@ using Domain.Models;
 using MediatR;
 using Application.Interfaces;
 using LinqKit;
+using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -19,16 +20,10 @@ namespace Application.Features.WordFeatures.Queries
         {
             Email = email;
         }
-        public class GetClosestWordsQueryHandler : IRequestHandler<GetClosestWordsQuery, IEnumerable<WordCount>>
+        public class GetClosestWordsQueryHandler : QueriesWithUserWordHandlerBaseClass, IRequestHandler<GetClosestWordsQuery, IEnumerable<WordCount>>
         {
-            private readonly IWordsDbContext _context;
-            public GetClosestWordsQueryHandler(IWordsDbContext context)
+            public GetClosestWordsQueryHandler(IWordsDbContext context) : base(context)
             {
-                _context = context;
-            }
-            private static DateTime DateToday
-            {
-                get { return DateTime.Today.ToUniversalTime(); }
             }
             public async Task<IEnumerable<WordCount>> Handle(GetClosestWordsQuery query, CancellationToken cancellationToken)
             {
@@ -43,23 +38,7 @@ namespace Application.Features.WordFeatures.Queries
 
                 return closeWords.ToList();
             }
-            public async Task<WordCount> UserWord(string email)
-            {
-                var word = await _context.Words
-                    .LaterThan(DateToday)
-                    .ByEmail(email)
-                    .SingleOrDefaultAsync();
-
-                var userWordAmount = await _context.Words
-                    .LaterThan(DateToday)
-                    .ByText(word.Text)
-                    .CountAsync();
-
-                var userWord = new WordCount { Word = word.Text, Count = userWordAmount };
-
-                return userWord;
-            }
-            public static List<string> GetKeys(string word)
+            private static List<string> GetKeys(string word)
             {
                 var keys = new List<string>();
                 var len = word.Length;

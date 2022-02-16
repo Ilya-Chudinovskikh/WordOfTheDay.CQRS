@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -19,16 +20,10 @@ namespace Application.Features.WordFeatures.Queries
         {
             Word = word;
         }
-        public class WordIsAlreadyExistQueryHandler : IRequestHandler<WordIsAlreadyExistsQuery, bool>
+        public class WordIsAlreadyExistQueryHandler : QueriesHandlerBaseClass, IRequestHandler<WordIsAlreadyExistsQuery, bool>
         {
-            private readonly IWordsDbContext _context;
-            public WordIsAlreadyExistQueryHandler(IWordsDbContext context)
+            public WordIsAlreadyExistQueryHandler(IWordsDbContext context) : base(context)
             {
-                _context = context;
-            }
-            private static DateTime DateToday
-            {
-                get { return DateTime.Today.ToUniversalTime(); }
             }
             public Task<bool> Handle(WordIsAlreadyExistsQuery query, CancellationToken cancellationToken)
             {
