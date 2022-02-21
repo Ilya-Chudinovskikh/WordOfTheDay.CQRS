@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Features.WordFeatures.Queries.QueryExtensions;
@@ -10,6 +8,8 @@ using MediatR;
 using Application.Interfaces;
 using LinqKit;
 using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
+using MongoDB.Driver;
+using System.Linq;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -22,7 +22,7 @@ namespace Application.Features.WordFeatures.Queries
         }
         public class GetClosestWordsQueryHandler : QueriesWithUserWordHandlerBaseClass, IRequestHandler<GetClosestWordsQuery, IEnumerable<WordCount>>
         {
-            public GetClosestWordsQueryHandler(IWordsDbContext context) : base(context)
+            public GetClosestWordsQueryHandler(IWordsMongoDb context) : base(context)
             {
             }
             public async Task<IEnumerable<WordCount>> Handle(GetClosestWordsQuery query, CancellationToken cancellationToken)
@@ -32,7 +32,9 @@ namespace Application.Features.WordFeatures.Queries
                 var keys = GetKeys(word);
 
                 var closeWords = _context.Words
-                    .AsExpandable().FilterClosestWords(keys, word)
+                    .AsQueryable()
+                    .AsExpandable()
+                    .FilterClosestWords(keys, word)
                     .LaterThan(DateToday)
                     .GroupByWordCount();
 

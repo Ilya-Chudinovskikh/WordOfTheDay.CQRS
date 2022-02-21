@@ -19,16 +19,5 @@ namespace Repository.Context
         {
             await base.SaveChangesAsync();
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Word>()
-                .HasIndex(w => new { w.AddTime, w.Email })
-                .HasDatabaseName("DateEmail_Index")
-                .IsUnique();
-
-            modelBuilder.Entity<Word>()
-                .HasIndex(w => new { w.AddTime, w.Text })
-                .HasDatabaseName("DateText_Index");
-        }
     }
 }

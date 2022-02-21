@@ -1,10 +1,8 @@
 ﻿using Application.Interfaces;
 using MediatR;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Features.WordFeatures.Queries.QueryExtensions;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models;
 using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
@@ -20,7 +18,7 @@ namespace Application.Features.WordFeatures.Queries
         }
         public class GetUserWordQueryHandler : QueriesWithUserWordHandlerBaseClass, IRequestHandler<GetUserWordQuery, WordCount>
         {
-            public GetUserWordQueryHandler(IWordsDbContext context) : base(context)
+            public GetUserWordQueryHandler(IWordsMongoDb context) : base(context)
             {
             }
             public async Task<WordCount> Handle(GetUserWordQuery query, CancellationToken cancellationToken)

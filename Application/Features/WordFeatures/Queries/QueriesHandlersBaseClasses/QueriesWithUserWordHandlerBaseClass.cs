@@ -2,26 +2,31 @@
 using Application.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses
 {
     public class QueriesWithUserWordHandlerBaseClass : QueriesHandlerBaseClass
     {
-        public QueriesWithUserWordHandlerBaseClass(IWordsDbContext context) : base(context)
+        public QueriesWithUserWordHandlerBaseClass(IWordsMongoDb context) : base(context)
         {
         }
         public async Task<WordCount> UserWord(string email)
         {
-            var word = await _context.Words
+            var word = _context.Words
+                .AsQueryable()
                 .LaterThan(DateToday)
                 .ByEmail(email)
-                .SingleOrDefaultAsync();
+                .SingleOrDefault();
 
-            var userWordAmount = await _context.Words
+            var userWordAmount = _context.Words
+                .AsQueryable()
                 .LaterThan(DateToday)
                 .ByText(word.Text)
-                .CountAsync();
+                .Count();
 
             var userWord = new WordCount { Word = word.Text, Count = userWordAmount };
 

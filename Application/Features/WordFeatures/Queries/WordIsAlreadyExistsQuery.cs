@@ -3,13 +3,11 @@ using Application.Interfaces;
 using Domain.Entites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
+using MongoDB.Driver;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -22,15 +20,16 @@ namespace Application.Features.WordFeatures.Queries
         }
         public class WordIsAlreadyExistQueryHandler : QueriesHandlerBaseClass, IRequestHandler<WordIsAlreadyExistsQuery, bool>
         {
-            public WordIsAlreadyExistQueryHandler(IWordsDbContext context) : base(context)
+            public WordIsAlreadyExistQueryHandler(IWordsMongoDb context) : base(context)
             {
             }
-            public Task<bool> Handle(WordIsAlreadyExistsQuery query, CancellationToken cancellationToken)
+            public async Task<bool> Handle(WordIsAlreadyExistsQuery query, CancellationToken cancellationToken)
             {
                 var exist = _context.Words
+                .AsQueryable()
                 .LaterThan(DateToday)
                 .ByEmail(query.Word.Email)
-                .AnyAsync(cancellationToken: cancellationToken);
+                .Any(/*cancellationToken: cancellationToken*/);
 
                 return exist;
             }

@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Domain.Entites;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Interfaces
 {

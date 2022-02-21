@@ -5,8 +5,8 @@ namespace Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses
 {
     public class QueriesHandlerBaseClass
     {
-        private protected readonly IWordsDbContext _context;
-        public QueriesHandlerBaseClass(IWordsDbContext context)
+        private protected readonly IWordsMongoDb _context;
+        public QueriesHandlerBaseClass(IWordsMongoDb context)
         {
             _context = context;
         }
