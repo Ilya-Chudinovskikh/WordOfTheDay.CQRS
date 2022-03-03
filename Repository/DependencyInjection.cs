@@ -12,6 +12,8 @@ namespace Repository
         public static void AddWordsMongoDb(this IServiceCollection services)
         {
             services.AddScoped<IWordsMongoDb, WordsMongoDb>();
+
+            services.AddScoped<ConfigureWordsMongoDbIndexesService>();
         }
         public static void AddWordsDbContext(this IServiceCollection services, string connectionString)
         {

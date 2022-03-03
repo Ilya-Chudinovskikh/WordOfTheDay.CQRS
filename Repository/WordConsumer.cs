@@ -2,31 +2,35 @@
 using MassTransit;
 using System;
 using System.Threading.Tasks;
-using Application.Interfaces;
-using Domain.Entites;
+using Domain.Models;
+using MediatR;
+using Application.Features.WordFeatures.Commands;
+using Application.Features.WordFeatures.Queries;
 
 namespace Repository
 {
     public class WordConsumer : IConsumer<WordInfo>
     {
-        private readonly IWordsMongoDb _context;
-        public WordConsumer(IWordsMongoDb context)
+        private readonly IMediator _mediator;
+        public WordConsumer(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
         public async Task Consume(ConsumeContext<WordInfo> wordInfoIncoming)
         {
-            await Console.Out.WriteLineAsync(wordInfoIncoming.Message.Text);
+            var wordCount = new WordCount
+            {
+                Word = wordInfoIncoming.Message.Text,
+                Count = 1,
+                expireAt = wordInfoIncoming.Message.AddTime.AddDays(1)
+            };
+            var word = wordCount.Word;
 
-            _context.Words.InsertOne(
-                new Word {
-                    Id = wordInfoIncoming.Message.Id,
-                    Email = wordInfoIncoming.Message.Email,
-                    Text = wordInfoIncoming.Message.Text,
-                    AddTime = wordInfoIncoming.Message.AddTime,
-                    LocationLongitude = wordInfoIncoming.Message.LocationLongitude,
-                    LocationLatitude = wordInfoIncoming.Message.LocationLatitude
-                });
+            if (await _mediator.Send(new WordIsAlreadyExistsQuery(word)))
+                await _mediator.Send(new IncrementCountCommand(word));
+
+            else
+                await _mediator.Send(new ConsumeCommand(wordCount));
         }
     }
 }

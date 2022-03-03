@@ -1,8 +1,5 @@
-﻿using Application.Features.WordFeatures.Queries.QueryExtensions;
-using Application.Interfaces;
-using Domain.Entites;
+﻿using Application.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +10,10 @@ namespace Application.Features.WordFeatures.Queries
 {
     public class WordIsAlreadyExistsQuery : IRequest<bool>
     {
-        public Word Word { get; set; }
-        public WordIsAlreadyExistsQuery(Word word)
+        public string Text { get; set; }
+        public WordIsAlreadyExistsQuery(string text)
         {
-            Word = word;
+            Text = text;
         }
         public class WordIsAlreadyExistQueryHandler : QueriesHandlerBaseClass, IRequestHandler<WordIsAlreadyExistsQuery, bool>
         {
@@ -25,11 +22,9 @@ namespace Application.Features.WordFeatures.Queries
             }
             public async Task<bool> Handle(WordIsAlreadyExistsQuery query, CancellationToken cancellationToken)
             {
-                var exist = _context.Words
+                var exist = _context.WordCounts
                 .AsQueryable()
-                .LaterThan(DateToday)
-                .ByEmail(query.Word.Email)
-                .Any(/*cancellationToken: cancellationToken*/);
+                .Any(word=>query.Text==word.Word);
 
                 return exist;
             }

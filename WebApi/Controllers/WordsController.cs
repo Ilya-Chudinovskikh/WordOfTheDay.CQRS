@@ -28,17 +28,17 @@ namespace WebApi.Controllers
 
             return Ok(wordOfTheDay);
         }
-        [HttpGet("get-closest-words/{email}")]
-        public async Task<IActionResult> GetClosestWords(string email)
+        [HttpGet("get-closest-words/{text}")]
+        public async Task<IActionResult> GetClosestWords(string text)
         {
-            var closestWords = await _mediator.Send(new GetClosestWordsQuery(email));
+            var closestWords = await _mediator.Send(new GetClosestWordsQuery(text));
 
             return Ok(closestWords);
         }
-        [HttpGet("{email}")]
-        public async Task<IActionResult> GetUserWord(string email)
+        [HttpGet("{text}")]
+        public async Task<IActionResult> GetUserWord(string text)
         {
-            var userWord = await _mediator.Send(new GetUserWordQuery(email));
+            var userWord = await _mediator.Send(new GetUserWordQuery(text));
 
             return Ok(userWord);
         }
@@ -50,7 +50,7 @@ namespace WebApi.Controllers
                 return BadRequest();
             }
 
-            if (await _mediator.Send(new WordIsAlreadyExistsQuery(word)))
+            if (await _mediator.Send(new EmailIsAlreadyUsedQuery(word.Email)))
                 ModelState.AddModelError("Email", "Users with the same email address can add only one word per day!");
 
             if (!ModelState.IsValid)

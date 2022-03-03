@@ -3,7 +3,6 @@ using Domain.Entites;
 using MassTransit;
 using MediatR;
 using SharedModelsLibrary;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,22 +19,22 @@ namespace Application.Features.WordFeatures.Commands
         {
             private readonly IWordsDbContext _context;
             private readonly IPublishEndpoint _publishEndpoint;
-            public PostWordCommandHandler(IWordsDbContext context, IPublishEndpoint publishEndpoint)
+            private readonly IMockLocation _mockLocation;
+            private readonly IDateTodayService _dateToday;
+            public PostWordCommandHandler(IWordsDbContext context, IPublishEndpoint publishEndpoint, IMockLocation mockLocation, IDateTodayService dateToday)
             {
                 _context = context;
                 _publishEndpoint = publishEndpoint;
-            }
-            private static DateTime DateToday
-            {
-                get { return DateTime.Today.ToUniversalTime(); }
+                _mockLocation = mockLocation;
+                _dateToday = dateToday;
             }
             public async Task<Word> Handle(PostWordCommand command, CancellationToken cancellationToken)
             {
                 var word = command._word;
+                var longtitude = _mockLocation.Longtitude;
+                var latitude = _mockLocation.Latitude;
 
-                var (longtitude, latitude) = MockLocation();
-
-                word.AddTime = DateToday;
+                word.AddTime = _dateToday.DateToday;
                 word.LocationLongitude = longtitude;
                 word.LocationLatitude = latitude;
 
@@ -45,25 +44,6 @@ namespace Application.Features.WordFeatures.Commands
                 await PostAndPublishWord(word);
 
                 return word;
-            }
-            private static (double longtitude, double latitude) MockLocation()
-            {
-                var longtitude = RandomCoordinate(180);
-                var latitude = RandomCoordinate(90);
-
-                var location = (longtitude, latitude);
-
-                return location;
-            }
-            private static double RandomCoordinate(int degree)
-            {
-                var random = new Random();
-                var intCoordinate = random.Next(-degree, degree);
-                var doubleCoordinate = Math.Round(random.NextDouble(), 5);
-
-                var coordinate = intCoordinate + doubleCoordinate;
-
-                return coordinate;
             }
             private async Task PostAndPublishWord(Word word)
             {

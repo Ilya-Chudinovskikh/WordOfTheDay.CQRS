@@ -1,10 +1,10 @@
-﻿using Domain.Entites;
+﻿using Domain.Models;
 using MongoDB.Driver;
 
 namespace Application.Interfaces
 {
     public interface IWordsMongoDb
     {
-        IMongoCollection<Word> Words { get; set; }
+        IMongoCollection<WordCount> WordCounts { get; set; }
     }
 }

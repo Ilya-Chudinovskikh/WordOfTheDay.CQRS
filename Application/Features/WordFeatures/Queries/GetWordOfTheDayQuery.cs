@@ -3,12 +3,9 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Features.WordFeatures.Queries.QueryExtensions;
-using Microsoft.EntityFrameworkCore;
 using Domain.Models;
 using Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses;
 using MongoDB.Driver;
-//using MongoDB.Driver.Linq;
 
 namespace Application.Features.WordFeatures.Queries
 {
@@ -24,12 +21,10 @@ namespace Application.Features.WordFeatures.Queries
             }
             public async Task<WordCount> Handle(GetWordOfTheDayQuery query, CancellationToken cancellationToken)
             {
-                var wordOfTheDay = _context.Words
+                var wordOfTheDay = _context.WordCounts
                 .AsQueryable()
-                .LaterThan(DateToday)
-                .GroupByWordCount()
                 .OrderByDescending(w => w.Count)
-                .FirstOrDefault(/*cancellationToken: cancellationToken*/);
+                .FirstOrDefault();
 
                 if (wordOfTheDay == null)
                     return null;

@@ -1,7 +1,8 @@
 ﻿using Application.Interfaces;
-using Domain.Entites;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
+using Domain.Models;
+using System;
 
 namespace Repository.Context
 {
@@ -9,18 +10,11 @@ namespace Repository.Context
     {
         public WordsMongoDb(IConfiguration configuration)
         {
-            //var client = new MongoClient(configuration.GetValue<string>("QueriesMongoDbSettings:ConnectionString"));
-            //var database = client.GetDatabase(configuration.GetValue<string>("QueriesMongoDbSettings:DatabaseName"));
-
-            //Words = database.GetCollection<Word>(configuration.GetValue<string>("QueriesMongoDbSettings:CollectionName"));
             var client = new MongoClient(configuration.GetConnectionString("WordsMongoDb"));
             var database = client.GetDatabase("WordsMongoDb");
 
-            Words = database.GetCollection<Word>("Words");
+            WordCounts = database.GetCollection<WordCount>("WordCounts");
         }
-        public IMongoCollection<Word> Words { get; set; }
-        public WordsMongoDb()
-        {
-        }
+        public IMongoCollection<WordCount> WordCounts { get; set; }
     }
 }

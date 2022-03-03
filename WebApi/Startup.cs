@@ -7,9 +7,6 @@ using Repository;
 using Application;
 using MediatR;
 using System.Reflection;
-using Application.Interfaces;
-using Repository.QuriesMongoDb;
-using Microsoft.Extensions.Options;
 
 namespace WebApi
 {
@@ -29,15 +26,13 @@ namespace WebApi
             services.AddApplication();
             services.AddWordsDbContext(Configuration.GetConnectionString("WordsDbContext"));
             services.AddWordsMongoDb();
+            services.AddDateToday();
+            services.AddMockLocation();
+
             services.AddConfiguredMassTransitConsumer(Configuration.GetConnectionString("RabbitMQHost"));
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-            services.Configure<IQueriesMongoDbSettings>(
-                Configuration.GetSection(nameof(QueriesMongoDbSettings)));
-
-            services.AddSingleton<IQueriesMongoDbSettings>(sp =>
-                sp.GetRequiredService<IOptions<QueriesMongoDbSettings>>().Value);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,8 +42,6 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

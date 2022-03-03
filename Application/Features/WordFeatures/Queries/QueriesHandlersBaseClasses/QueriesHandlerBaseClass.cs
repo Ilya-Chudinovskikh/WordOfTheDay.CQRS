@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using System;
 
 namespace Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses
 {
@@ -9,10 +8,6 @@ namespace Application.Features.WordFeatures.Queries.QueriesHandlersBaseClasses
         public QueriesHandlerBaseClass(IWordsMongoDb context)
         {
             _context = context;
-        }
-        private protected static DateTime DateToday
-        {
-            get { return DateTime.Today.ToUniversalTime(); }
         }
     }
 }
