@@ -1,18 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Repository;
 using Application;
+using MediatR;
+using System.Reflection;
 
 namespace WebApi
 {
@@ -27,14 +21,18 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplication();
-            services.AddRepository(Configuration.GetConnectionString("WordsDbContext"));
-
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
-            });
+
+            services.AddApplication();
+            services.AddWordsDbContext(Configuration.GetConnectionString("WordsDbContext"));
+            services.AddWordsMongoDb();
+            services.AddDateToday();
+            services.AddMockLocation();
+
+            services.AddConfiguredMassTransitConsumer(Configuration.GetConnectionString("RabbitMQHost"));
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,9 +40,8 @@ namespace WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WordOfTheDay.CQRS"));
             }
+
 
             app.UseHttpsRedirection();
 

@@ -1,9 +1,5 @@
 ﻿using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Domain.Entites;
 
@@ -19,20 +15,9 @@ namespace Repository.Context
         public WordsDbContext()
         {
         }
-        public async Task<int> SaveChanges()
+        public async Task SaveChanges()
         {
-            return await base.SaveChangesAsync();
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Word>()
-                .HasIndex(w => new { w.AddTime, w.Email })
-                .HasDatabaseName("DateEmail_Index")
-                .IsUnique();
-
-            modelBuilder.Entity<Word>()
-                .HasIndex(w => new { w.AddTime, w.Text })
-                .HasDatabaseName("DateText_Index");
+            await base.SaveChangesAsync();
         }
     }
 }
